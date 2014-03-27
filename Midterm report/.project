@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>PGM project</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>net.sourceforge.texlipse.builder.TexlipseBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>net.sourceforge.texlipse.builder.TexlipseNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>bibliography.bib</name>
+			<type>1</type>
+			<location>C:/Users/Felipe/Documents/GitHub/Weather-Forecasting/Midterm report/bibliography.bib</location>
+		</link>
+	</linkedResources>
+</projectDescription>
