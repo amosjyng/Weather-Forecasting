@@ -1,6 +1,9 @@
 # History files
 .Rhistory
 
+# R Data files
+*.Rda
+
 # Example code in package build process
 *-Ex.R
 
