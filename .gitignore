@@ -9,3 +9,12 @@
 
 # misc files
 *.txt
+
+# Latex files
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.out
+*.ps
