@@ -206,6 +206,24 @@ each spatial cell.
 \label{fig:dynamic_100}
 \end{figure}
 
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/grad_0.png}
+\caption{Network structure of gradient data with a GLASSO regularization parameter of 0 (no regularization).}
+\label{fig:grad_0}
+\end{figure}
+
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/grad_50.png}
+\caption{Network structure of gradient data with a GLASSO regularization parameter of 50.}
+\label{fig:grad_50}
+\end{figure}
+
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/grad_100.png}
+\caption{Network structure of gradient data with a GLASSO regularization parameter of 100.}
+\label{fig:grad_100}
+\end{figure}
+
 \begin{table*}[t]
 \caption{Meteorological variables available on NLDAS-2}
 \label{tab:variables}
@@ -327,7 +345,10 @@ precision matrix for relations between the various variables in the data.
 The results for different GLASSO regularization parameters are plotted in
 Figures~\ref{fig:data_0} to \ref{fig:data_100}. We also ran GLASSO to infer the
 network structure for variables in both $t$ and $t - 1$ timestamps; results are
-shown in Figures~\ref{fig:dynamic_0} to \ref{fig:dynamic_100}.
+shown in Figures~\ref{fig:dynamic_0} to \ref{fig:dynamic_100}. Finally, we ran
+GLASSO to infer the relationships between the various states of weather and the
+changes from one state to the other. Results for this are shown in Figures~
+\ref{fig:grad_0} to \ref{fig:grad_100}.
 
 \section{Activity plan}
 

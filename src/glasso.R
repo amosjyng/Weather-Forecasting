@@ -10,9 +10,13 @@ gm <- glasso(var(data), as.numeric(args[2]))
 rownames(gm$wi) <- colnames(data)
 colnames(gm$wi) <- colnames(data)
 # colnames(gm$wi) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
+# colnames(gm$wi) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS",
+#                      "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2",
+#                      "WS2")
  colnames(gm$wi) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS",
-                      "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2",
-                      "WS2")
+                      "gP", "gPE", "gCP", "gLW", "gSW", "gPE", "gSP", "gSH", "gT",
+                      "gWS", "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2",
+                      "SH2", "T2", "WS2")
 
 
 # do something with results
