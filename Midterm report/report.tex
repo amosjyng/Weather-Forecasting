@@ -156,7 +156,7 @@ sample.
 \vskip -0.2in
 \end{figure}
 
-Thus far we have downloaded the data from the above links, over the range of a few months. We put the data into a database for efficient storage and retrieval. We then used the Graphical LASSO (GLASSO) training algorithm to obtain the precision matrix for relations between the various variables in the data. The results, shown in Table~\ref{tab:precision}, indicate that precipitation is only directly linked to sufrace pressure, which in turn is linked with the rest of the variables.
+Thus far we have downloaded the data from the above links, over the range of a few months. We put the data into a database for efficient storage and retrieval. We then used the Graphical LASSO (GLASSO) training algorithm to obtain the precision matrix for relations between the various variables in the data. The results, shown in Table~\ref{tab:precision}, indicate that precipitation is only directly linked to surface pressure, which in turn is linked with the rest of the variables.
 
 \begin{table*}[t]
 \begin{tabular}{ p{1cm} p{2cm} p{2cm} p{2cm} p{2cm} p{2cm} p{2cm} p{2cm}}
@@ -175,6 +175,10 @@ WS  &0.000e+00 &-3.384e-05 & 0.000e+00 &-1.719e-05 & 1.189e-05 & 0.000e+00 & 1.8
 \end{table*}
 
 \section{Proposed method}
+
+We propose to next perform the non-trivial task of performing Bayesian inference to obtain the predicted value of one variable (in our case, this would almost certainly be the ``precipitation'' variable) given all the others. Inference would most likely be achieved using loopy belief propagation (as GLASSO seems to produce all sorts of cycles), thus involving such techniques as message passing and variable elimination.
+
+Because the weather conditions at time $t$ almost certainly depend on the weather conditions at time $t - 1$, we also consider training the data using a CRF or an HMM, or simply a larger Bayesian network that also contains nodes for the previous or previous two observations.
 
 \section{Activity plan}
 
