@@ -1,12 +1,36 @@
 library(glasso) # keep an eye out for dpglasso
+library(igraph)
 
 # read data from commandline argument
 args <- commandArgs(trailingOnly = TRUE)
-data <- read.delim(args[1])
+data <- read.delim(args[1], header = TRUE)
 
 # run GLASSO algorithm
-gm <- glasso(var(data), 50)
+gm <- glasso(var(data), as.numeric(args[2]))
+rownames(gm$wi) <- colnames(data)
+colnames(gm$wi) <- colnames(data)
+# colnames(gm$wi) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
+ colnames(gm$wi) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS",
+                      "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2",
+                      "WS2")
+
 
 # do something with results
 save(gm, file="glasso_model.Rda")
 print(paste("Log-likelihoode of model is", toString(gm$loglik)))
+# plot adjacency matrix
+adj <- gm$wi
+for (row in 1:nrow(adj)) {
+  for (col in 1:ncol(adj)) {
+    if (adj[row,col] != 0) {
+      adj[row,col] = 1
+    }
+    if (row == col) {
+      adj[row, col] = 0
+    }
+  }
+}
+png("plot.png")
+plot.igraph(as.undirected(graph.adjacency(adj)), vertex.size = 20,
+            vertex.label.cex = 1)
+dev.off()

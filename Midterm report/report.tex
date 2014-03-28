@@ -149,30 +149,50 @@ sample.
 
 \begin{figure}[ht] \vskip 0.2in
 \begin{center}
-\centerline{\includegraphics[bb=0 0 487 360,width=\columnwidth]{weather.png}}
+\centerline{\includegraphics[bb=0 0 487 360,width=\columnwidth]{images/weather.png}}
 \caption{This is one example of a rainfall image produced during a severe storm in Pennsylvania in 2010. Each cell in this image has a size of roughly 10 km $\times$ 10 km. More information on the NLDAS-2 data products can be found on the following URLs: \url{http://ldas.gsfc.nasa.gov/index.php} and \url{http://disc.sci.gsfc.nasa.gov/hydrology/data-holdings}.}
 \label{fig:example_rainfall}
 \end{center}
 \vskip -0.2in
 \end{figure}
 
-Thus far we have downloaded the data from the above links, over the range of a few months. We put the data into a database for efficient storage and retrieval. We then used the Graphical LASSO (GLASSO) training algorithm to obtain the precision matrix for relations between the various variables in the data. The results, shown in Table~\ref{tab:precision}, indicate that precipitation is only directly linked to surface pressure, which in turn is linked with the rest of the variables.
+Thus far we have downloaded the data from the above links, over the range of a few months. We put the data into a database for efficient storage and retrieval. We then used the Graphical LASSO (GLASSO) training algorithm to obtain the precision matrix for relations between the various variables in the data. The results for different regularization parameters are plotted in Figures~\ref{fig:data_0} to \ref{fig:data_100}. We also ran GLASSO to infer the network structure for variables in both $t$ and $t - 1$ timestamps; results are show in Figures~\ref{fig:dynamic_0} to \ref{fig:dynamic_100}.
 
-\begin{table*}[t]
-\begin{tabular}{ p{1cm} p{2cm} p{2cm} p{2cm} p{2cm} p{2cm} p{2cm} p{2cm}}
-& Precipitation & Available potential energy & LW radiation & SW radiation & Surface pressure & Temperature 2 m & Wind speed\\
-\hline
-P   & 1.978e-02 & 0.000e+00 & 0.000e+00 & 0.000e+00 & 1.956e-06 & 0.000e+00 & 0.000e+00\\
-APE &0.000e+00 & 2.196e-05 &-3.935e-05 &-2.069e-06 & 8.472e-07 &-9.129e-05 &-3.384e-05\\
-LW R&0.000e+00 &-3.935e-05 & 7.906e-04 &-1.638e-05 & 4.472e-06 &-4.096e-04 & 0.000e+00\\
-SW R&0.000e+00 &-2.069e-06 &-1.638e-05 & 2.341e-05 &-1.041e-06 &-1.383e-04 &-1.719e-05\\
-SP  &1.956e-06 & 8.472e-07 & 4.472e-06 &-1.041e-06 & 4.021e-06 & 0.000e+00 & 1.189e-05\\
-T   &0.000e+00 &-9.129e-05 &-4.096e-04 &-1.383e-04 & 0.000e+00 & 1.440e-02 & 0.000e+00\\
-WS  &0.000e+00 &-3.384e-05 & 0.000e+00 &-1.719e-05 & 1.189e-05 & 0.000e+00 & 1.880e-02\\
-\end{tabular}
-\caption{The precision matrix obtained from results thus far, using a GLASSO regularization parameter of $\rho = 50$. Log-likelihood for the data given this precision matrix stands at $-376$. Note that all variables (``percentage convective precipitation,'' ``potential evaporation,'' and ``specific humidity'') that had zero covariance with all variables other than itself, are not included in this table.}
-\label{tab:precision}
-\end{table*}
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/data_0.png}
+\caption{Network structure as inferred from the precision matrix obtained from results thus far, using a GLASSO regularization parameter of 0 (equivalent to no regularization). Edges are shown where precision matrix entries were nonzero.}
+\label{fig:data_0}
+\end{figure}
+
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/data_50.png}
+\caption{Network structure with a GLASSO regularization parameter of 50.}
+\label{fig:data_50}
+\end{figure}
+
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/data_100.png}
+\caption{Network structure with a GLASSO regularization parameter of 100.}
+\label{fig:data_100}
+\end{figure}
+
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/dynamic_0.png}
+\caption{Network structure of dynamic data with a GLASSO regularization parameter of 0 (no regularization).}
+\label{fig:dynamic_0}
+\end{figure}
+
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/dynamic_50.png}
+\caption{Network structure of dynamic data with a GLASSO regularization parameter of 50.}
+\label{fig:dynamic_50}
+\end{figure}
+
+\begin{figure}
+\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/dynamic_100.png}
+\caption{Network structure of dynamic data with a GLASSO regularization parameter of 100.}
+\label{fig:dynamic_100}
+\end{figure}
 
 \section{Proposed method}
 
