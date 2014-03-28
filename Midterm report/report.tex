@@ -180,26 +180,29 @@ We propose to next perform the non-trivial task of performing Bayesian inference
 
 Because the weather conditions at time $t$ almost certainly depend on the weather conditions at time $t - 1$, we also consider training the data using a CRF or an HMM, or simply a larger Bayesian network that also contains nodes for the previous or previous two observations.
 
+We will also perform cross-validation on our learned model and the data set, so as to test for model accuracy in a way that doesn't produce overfitting of training data.
+
 \section{Activity plan}
 
-We plan to use different probabilistic graphical models to try to determine the
-probability distributions of weather variables maps given the observed values
-from previous time steps. We will first use variable discretization so that
-discrete models can be used. Afterwards, we will attempt using models that are
-able to handle continuous variables.
+We plan to use different probabilistic graphical models (HMMs, CRFs, plain old Bayesian networks) to try to learn the
+conditional probability distribution parameters of weather variables maps given the observed values
+from previous time steps. We are currently assuming the distributions to take on a Gaussian form, and learning the distributions from scratch.
 
-To establish a baseline approach, we will first use simple graph
-representations, such as Naïve Bayes networks. Later, we will attempt to use
-models with more complex topologies that take into account the interdependencies
-of variables.
-
-Some of the activities that we will perform include
+\subsection{Old Activities}
+The old list of activities that we would have intended to perform include
 \begin{enumerate}
 \item Selection of the dataset and the study area
 \item Data download and pre-processing
 \item Variable discretization strategy
 \item Na\"\i ve Bayes formulation
 \item Review of probabilistic graphical models for continuous variables
+\end{enumerate}
+
+\subsection{New Activities}
+The new list of activities we intend to perform are
+\begin{enumerate}
+\item Formulation of data in other commonly-used graphical models (CRFs, HMMs, etc.).
+\item Cross-validation to check for model accuracy while preventing overfitting
 \end{enumerate}
 
 \nocite{nasseri2008}
