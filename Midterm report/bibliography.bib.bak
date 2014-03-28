@@ -75,17 +75,6 @@
   publisher = {JSTOR}
 }
 
-@INPROCEEDINGS{Murphy1999,
-  author = {Murphy, Kevin P and Weiss, Yair and Jordan, Michael I},
-  title = {Loopy belief propagation for approximate inference: An empirical
-	study},
-  booktitle = {Proceedings of the Fifteenth conference on Uncertainty in artificial
-	intelligence},
-  year = {1999},
-  pages = {467--475},
-  organization = {Morgan Kaufmann Publishers Inc.}
-}
-
 @ARTICLE{nasseri2008,
   author = {M. Nasseri and K. Asghari and M. Abedini},
   title = {Optimized scenario for rainfall forecasting using genetic algorithm
