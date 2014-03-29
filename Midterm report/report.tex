@@ -52,7 +52,7 @@
 % submissions: the style file will automatically remove it for you
 % unless you've provided the [accepted] option to the icml2012
 % package.
-\icmlauthor{Felipe Hernandez}{felipeh@andrew.cmu.edu}
+\icmlauthor{Felipe Hern\'andez}{felipeh@andrew.cmu.edu}
 \icmladdress{Depertment of Civil and Environmental Engineering, University of Pittsburgh}
 \icmlauthor{Amos Ng}{ajng@andrew.cmu.edu}
 \icmladdress{Language Technologies Institute, Carnegie Mellon University}
@@ -163,65 +163,11 @@ each spatial cell.
 
 \begin{figure}[ht] \vskip 0.2in
 \begin{center}
-\centerline{\includegraphics[bb=0 0 487 360,width=\columnwidth]{images/weather.png}}
+\centerline{\includegraphics[width=0.9\columnwidth]{images/weather.png}}
 \caption{This is one example of a rainfall image produced during a severe storm in Pennsylvania in 2010. Each cell in this image has a size of roughly 10 km $\times$ 10 km. More information on the NLDAS-2 data products can be found on the following URLs: \url{http://ldas.gsfc.nasa.gov/index.php} and \url{http://disc.sci.gsfc.nasa.gov/hydrology/data-holdings}.}
 \label{fig:example_rainfall}
 \end{center}
 \vskip -0.2in
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/data_0.png}
-\caption{Network structure as inferred from the precision matrix obtained from results thus far, using a GLASSO regularization parameter of 0 (equivalent to no regularization). Edges are shown where precision matrix entries were nonzero.}
-\label{fig:data_0}
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/data_50.png}
-\caption{Network structure with a GLASSO regularization parameter of 50.}
-\label{fig:data_50}
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/data_100.png}
-\caption{Network structure with a GLASSO regularization parameter of 100.}
-\label{fig:data_100}
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/dynamic_0.png}
-\caption{Network structure of dynamic data with a GLASSO regularization parameter of 0 (no regularization).}
-\label{fig:dynamic_0}
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/dynamic_50.png}
-\caption{Network structure of dynamic data with a GLASSO regularization parameter of 50.}
-\label{fig:dynamic_50}
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/dynamic_100.png}
-\caption{Network structure of dynamic data with a GLASSO regularization parameter of 100.}
-\label{fig:dynamic_100}
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/grad_0.png}
-\caption{Network structure of gradient data with a GLASSO regularization parameter of 0 (no regularization).}
-\label{fig:grad_0}
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/grad_50.png}
-\caption{Network structure of gradient data with a GLASSO regularization parameter of 50.}
-\label{fig:grad_50}
-\end{figure}
-
-\begin{figure}
-\includegraphics[bb=0 0 2500 2500,scale=\textwidth]{images/grad_100.png}
-\caption{Network structure of gradient data with a GLASSO regularization parameter of 100.}
-\label{fig:grad_100}
 \end{figure}
 
 \begin{table*}[t]
@@ -292,8 +238,9 @@ vicinity of the cell at time step $t$ and time step $t -1$. Thsi option includes
 both temporal and spatial derivatives.
 \end{enumerate}
 
+\begin{center}
 \begin{figure}
-\includegraphics[bb=0 0 200 100,width=\linewidth]{images/plate_models.png}
+\includegraphics[width=0.9\columnwidth]{images/plate_models.png}
 \caption{Graphical models to represent different
 selections of input variables for the predictive model. \textit{S} represents
 a set of neighboring cells and \textit{p} represents the number of previous
@@ -302,6 +249,7 @@ Local dynamic; 2. Local with extended time dependency; 3.
 Neighborhood dynamic; 4. Neighborhood with extended time
 dependency.}\label{fig:plate_models}
 \end{figure}
+\end{center}
 
 We propose to implement function to estimate the probability
 of future values using a Gaussian Graphical Model (GGM). These models are
@@ -339,16 +287,73 @@ doesn't produce overfitting of the training data.
 \section{Preliminary results}
 
 Thus far we have downloaded the data from the above links, over the range of a
-few months. We put the data into a database for efficient storage and retrieval.
-We then used the Graphical LASSO (GLASSO) training algorithm to obtain the
-precision matrix for relations between the various variables in the data.
-The results for different GLASSO regularization parameters are plotted in
-Figures~\ref{fig:data_0} to \ref{fig:data_100}. We also ran GLASSO to infer the
+one month for an area around Pittsurgh of size 60 km x 60 km. We put the data
+into a database for efficient storage and retrieval. We then preprocessed the
+data to be arranged in a series of training examples arranged in the four cases
+mentioned before. We then used glasso to obtain the precision matrix for
+relations between the various variables in the data.
+
+The results for different glasso regularization parameters are plotted in
+Figures~\ref{fig:data_0} to \ref{fig:data_100}. We also ran glasso to infer the
 network structure for variables in both $t$ and $t - 1$ timestamps; results are
 shown in Figures~\ref{fig:dynamic_0} to \ref{fig:dynamic_100}. Finally, we ran
-GLASSO to infer the relationships between the various states of weather and the
+glasso to infer the relationships between the various states of weather and the
 changes from one state to the other. Results for this are shown in Figures~
 \ref{fig:grad_0} to \ref{fig:grad_100}.
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/data_0.png}
+\caption{Network structure as inferred from the precision matrix obtained from results thus far, using a GLASSO regularization parameter of 0 (equivalent to no regularization). Edges are shown where precision matrix entries were nonzero.}
+\label{fig:data_0}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/data_50.png}
+\caption{Network structure with a GLASSO regularization parameter of 50.}
+\label{fig:data_50}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/data_100.png}
+\caption{Network structure with a GLASSO regularization parameter of 100.}
+\label{fig:data_100}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/dynamic_0.png}
+\caption{Network structure of dynamic data with a GLASSO regularization parameter of 0 (no regularization).}
+\label{fig:dynamic_0}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/dynamic_50.png}
+\caption{Network structure of dynamic data with a GLASSO regularization parameter of 50.}
+\label{fig:dynamic_50}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/dynamic_100.png}
+\caption{Network structure of dynamic data with a GLASSO regularization parameter of 100.}
+\label{fig:dynamic_100}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/grad_0.png}
+\caption{Network structure of gradient data with a GLASSO regularization parameter of 0 (no regularization).}
+\label{fig:grad_0}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/grad_50.png}
+\caption{Network structure of gradient data with a GLASSO regularization parameter of 50.}
+\label{fig:grad_50}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\columnwidth]{images/grad_100.png}
+\caption{Network structure of gradient data with a GLASSO regularization parameter of 100.}
+\label{fig:grad_100}
+\end{figure}
 
 \section{Activity plan}
 
