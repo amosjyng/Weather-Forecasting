@@ -18,3 +18,7 @@
 *.log
 *.out
 *.ps
+Final report/.project
+Final report/.settings/org.eclipse.ltk.core.refactoring.prefs
+Final report/.texlipse
+Final report/bibliography.bib.bak
