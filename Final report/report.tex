@@ -78,8 +78,8 @@ conditions.
 
 Weather forecasting is used for a broad range of purposes, ranging from personal
 activity planning to large-scale economic decision-making to emergency
-preparation and response. The availability and accuracy of forecasts thus have a
-profound impact on human activities at many levels, both in measurable and
+preparation and response. The availability and the accuracy of forecasts thus
+have a profound impact on human activities at many levels, both in measurable and
 unmeasurable aspects.
 
 However, predicting weather is a difficult research problem. Most often,
@@ -89,8 +89,8 @@ learning approach focused on a regional scale and predict atmospheric variables
 at specific geographic locations. As opposed to deterministic methods, this
 probabilistic approach will help us not only estimate the most probable values
 for the forecasting variables as a regression approach would, but also determine
-what is the level of uncertainty associated with each forecasted variable,
-something that becomes more important as the forecasting time period becomes
+what is the level of uncertainty associated with each forecasted variable.
+Uncertainty becomes more important as the forecasting time period becomes
 larger. This additional knowledge would be key for potential users in order to
 assess how much they can trust the delivered forecasts.
 
@@ -116,28 +116,46 @@ available. Weather monitoring stations are the predominant data source,
 providing point measurements with high accuracy and varying temporal resolution.
 Artificial neural networks (ANN) have proven to be effective in such cases for
 forecasting rainfall amounts in the near future given a time series of
-previously observed values. The work by \citet{maier2000} presents an overview
-of such works using ANN. 
+previously observed values, as in the early work of \citet{French1992}. The work
+by \citet{maier2000} presents an overview of such works using ANN.
 
 More recent works have attempted to combine ANNs with other techniques to
 improve the performance of predictions. In \cite{hong2008}, a recursive ANN is
 trained using a support vector regression together with a chaotic particle swarm
-optimizer: the particle swarm optimization metha-heuristic is used to find the
+optimizer: the particle swarm optimization meta-heuristic is used to find the
 optimum parameters of the support vector regression model leading to a better
-performance when compared to other ANNs. Other algorithms used in weather
-forecasting include linear regression, discriminant analysis, and logistic
-regression as reviewed in the work by \citet{applequist2002}.
+performance when compared to other ANNs. Similarly, a genetic algorithm is used
+to perform the calibration of the network in \cite{nasseri2008}, given that the
+defining of the weights between the network's neurons is a non-convex
+optimization problem.
 
-Recently, meteorological observations from satellite and Doppler radar have
-become widely available, providing ubiquitous coverage at the cost of decreased
-precision. These sources of information add spatial dimensions to the
-forecasting problem. For example, Fourier spectrum, structure function, and
-moment-scale analyses are used to understand radar precipitation in
-\cite{harris2007}. Forecasting models have also been created to take advantage
-of interdependencies between atmospheric variables that are measured or
-estimated using other models. Rain-gauge data and outputs from atmospheric
-models are used for forecasting precipitation in \cite{kuligowski1998} and
-\cite{ramirez2005}.
+A related method is presented by \citet{Partal2007}, where
+the results from discrete wavelet transforms over the training data are fed into
+a neuro-fuzzy model for prediction. Wavelet neuro-fuzzy approaches are also
+studied by \citet{Kisi2011} and contrasted with single neuro-fuzzy models,
+single genetic programming regressions, and their conjoint counterparts using
+wavelet transformations. Algorithms of different nature than ANNs that are used
+in weather forecasting include linear regression, discriminant analysis, and
+logistic regression as reviewed in the work by \citet{applequist2002}.
+
+Recently, meteorological observations from land-based and satellite-based
+Doppler radars have become widely available, providing enhanced coverage at
+the cost of decreased precision. These sources of information add a spatial
+dimensions to the forecasting problem. Fourier spectrum, structure function,
+and moment-scale analyses are used to understand radar precipitation in
+\cite{harris2007}; decision trees are used on a Lagrangian reference framework
+to learn rainfall behavior from satellite images in \cite{Yang2007}; and and
+several sources of information, including satellite and radar images, are
+proposed in \cite{Bartok2010} for the spatial estimation of multiple weather
+variables.
+
+Forecasting models have also been created to take advantage
+of interdependencies between atmospheric variables that are estimated,
+instead of being measured, through the use of other models. For
+example, rain-gauge data and outputs from atmospheric models are used for
+forecasting precipitation in \cite{kuligowski1998} and \cite{ramirez2005}.
+Additional upper air soundings are also used in \cite{Hall1999}, and radar and
+satellite data is incorporated into forecasts in \cite{Koizumi1999}.
 
 \section{Data collection}
 
@@ -209,7 +227,7 @@ value one time step into the future, longer forecasts can be made by applying
 the same strategy iteratively on the next time step. This, of course, would mean
 a increase in the uncertainty.
 
-Let $X_k^{i,j,t}$ denote variable $j$ at time step $t$ at coordinates $i, j$.
+Let $X_k^{i,j,t}$ denote variable $k$ at time step $t$ at coordinates $i, j$.
 The estimation procedure would rely on a model $f(\cdot)$ that is able to
 compute the conditional probability of a variable $X$ given a set of observations
 $\hat{X}$ that belong to a spatial frame $S$ and a temporal frame $T$:
@@ -251,15 +269,14 @@ dependency.}\label{fig:plate_models}
 \end{figure}
 \end{center}
 
-We propose to implement function to estimate the probability
-of future values using a Gaussian Graphical Model (GGM). These models are
-multi-variable Gaussian probability distributions with the particularity that
-the dependencies between the random variables are purposefully kept to a
-minimum. This sparsity allows to create graphical representations that
-are meaningful to the users, and to run inference algorithms with reduced
-computational requirements. In GGM the density function of the variable vector
-$X$ is computed using a mean vector $\mu$ and a covariance matrix $\Sigma$
-using the following expression:
+We implement the estimation of the probability of future values using
+Gaussian Graphical Models (GGM). These models are multi-variable Gaussian
+probability distributions with the particularity that the dependencies between
+the random variables are purposefully kept to a minimum. This sparsity allows
+to create graphical representations that are meaningful to the users, and to
+run inference algorithms with reduced computational requirements. In GGM the
+density function of the variable vector $X$ is computed using a mean vector
+$\mu$ and a covariance matrix $\Sigma$ using the following expression:
 
 \begin{equation}
 \label{eq:gaussian}
@@ -267,14 +284,54 @@ P(X|\mu,\Sigma) =
 \frac{1}{(2\pi)^{n/2}\vert\Sigma\vert^{1/2}}\exp[-\frac{1}{2}(X - \mu)^T\Sigma^{-1}(X - \mu)]
 \end{equation}
 
-Sparsity in GGMs can be achieved by using regularized linear regressions (like
-the lasso \cite{tibshirani1996}) to estimate the coefficients of the precision
+Sparsity in GGMs can be achieved by using regularized linear regressions like
+the lasso \cite{tibshirani1996} to estimate the coefficients of the precision
 matrices $\Omega=\Sigma^{-1}$. The precision matrix has zero coefficients for
 pairs of variables that are conditionally independent. Two algorithms that apply
 this technique for the estimation of the precision matrix are the
-neighborhood estimation (\cite{meinshausen2006}) and the graphical lasso
-(glasso - \cite{Friedman2008}). We will use glasso for the purposes of this
+neighborhood estimation \cite{meinshausen2006} and the graphical lasso
+(glasso - \cite{Friedman2008}). We used glasso for the purposes of this
 project.
+
+Once we have learned the GGM, we can use inference to perform the forecasting.
+Inference implies finding the conditional distributions of all the unknown or
+unobserved variables ($X^U$) given the known or observed variables ($X^K = o$).
+So for example we may want to determine the values of the variables a time $t + 1$ given the
+observations at time $t$: $P(X^{t+1} | X^{t} = o)$. The conditional distribution
+is also a multi-variate Gaussian distribution which can be obtained using a na\"ive
+matrix inversion approach described in \cite{Koller2009}: let $\mu_1$ be the
+vector of mean values of the unobserved variables, and $\mu_2$ the means of the observed
+variables. Similarly, let $\Sigma_{11}$ be the part of the
+covariance matrix $\Sigma$ with the covariances between unobserved variables,
+$\Sigma_{12}$ and $\Sigma_{21}$ with the covariates between unobserved and
+observed variables, and $\Sigma_{22}$ with the covariates between observed
+variables. $\mu$ and $\Sigma$ are thus partitioned as:
+
+\begin{equation}
+\label{eq:distPartition}
+\mu = \left( \begin{array}{ccc}
+\mu_1 \\ \mu_2 
+\end{array} \right),
+& \Sigma = \left( \begin{array}{ccc}
+\Sigma_{11} & \Sigma_{12} \\
+\Sigma_{21} & \Sigma_{22}
+\end{array}\right)
+\end{equation}
+
+With this partition we can compute the mean ($\hat\mu$) and the covariance
+matrix ($\hat\Sigma$) of the conditional distribution:
+
+\begin{eqnarray}
+P(X^U | X^K = o) \sim \mathcal{N}(\hat\mu, \hat\Sigma) \\
+\hat\mu = \mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(o - \mu_2) \\
+\label{eq:naiveInference}
+\hat\Sigma = \Sigma^{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}
+\end{eqnarray}
+
+This na\"ive approach requires inverting a matrix which has a complexity of
+$\mathcal{O}(n^3)$. This operation becomes too expensive with large models and
+thus more efficient methods become necessary in these cases. 
+
 
 Once we have used glasso to learn the HMMs, we estimate the probability
 distribution of the variables to be forecasted using loopy belief
