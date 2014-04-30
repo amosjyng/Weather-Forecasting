@@ -215,17 +215,17 @@ second \\
 \end{tabular}
 \end{table*}
 
-\section{Method}
+\section{Methods}
 
 The task of forecasting weather states using the NLDAS-2 dataset can be
-approached by attempting to estimate the maps for each variable, one hour into
-the future, given the current state maps and, optionally, the previous maps.
-These maps can be obtained by estimating the values for each cell in the raster
-map one by one. This strategy effectively divides the problem into a large set
-of easier sub-problems that can be more easily addressed. By estimating each
-value one time step into the future, longer forecasts can be made by applying
-the same strategy iteratively on the next time step. This, of course, would mean
-a increase in the uncertainty.
+approached by attempting to estimate the maps for each variable one hour into
+the future given the current state maps and, optionally, additional previous
+maps. These maps can be obtained by estimating the values for each cell in the
+raster one by one. This strategy effectively divides the problem into a
+large set of easier sub-problems that can be more easily addressed. By
+estimating each value one time step into the future, longer forecasts can be
+made by applying the same strategy iteratively on the next time step. This, of
+course, would mean an increase in the uncertainty.
 
 Let $X_k^{i,j,t}$ denote variable $k$ at time step $t$ at coordinates $i, j$.
 The estimation procedure would rely on a model $f(\cdot)$ that is able to
@@ -234,13 +234,12 @@ $\hat{X}$ that belong to a spatial frame $S$ and a temporal frame $T$:
 
 \begin{equation}
 \label{eq:condProb}
-P(X) = f(\{X_k^{i,j,t}\} | (i,j) \in S, t \in T)
+P(X) = f[\{X_k^{i,j,t}\} | (i,j) \in S, t \in T]
 \end{equation}
 
 There are several alternatives for determining which variables to use as inputs
-of $f(\cdot)$. Depending on the results of the first setups, we might consider
-moving on to more complex models. Some of the alternatives are lusted below.
-Figure \ref{fig:plate_models} shows the graphical models for each of this cases.
+of $f(\cdot)$. Some of the alternatives are listed below. Figure
+\ref{fig:plate_models} shows the graphical models for each of these cases.
 
 \begin{enumerate}
 \item Values on time $t + 1$ depend on the values of all variables of the same
@@ -252,7 +251,7 @@ could use the time derivatives to account for these temporal variations.
 vicinity of the cell at time step $t$. We could account for these spatial
 variations by using spatial gradients.
 \item Values on time $t + 1$ depend on the values of all variables on the
-vicinity of the cell at time step $t$ and time step $t -1$. Thsi option includes
+vicinity of the cell at time step $t$ and time step $t -1$. This option includes
 both temporal and spatial derivatives.
 \end{enumerate}
 
@@ -269,14 +268,15 @@ dependency.}\label{fig:plate_models}
 \end{figure}
 \end{center}
 
-We implement the estimation of the probability of future values using
-Gaussian Graphical Models (GGM). These models are multi-variable Gaussian
-probability distributions with the particularity that the dependencies between
-the random variables are purposefully kept to a minimum. This sparsity allows
-to create graphical representations that are meaningful to the users, and to
-run inference algorithms with reduced computational requirements. In GGM the
-density function of the variable vector $X$ is computed using a mean vector
-$\mu$ and a covariance matrix $\Sigma$ using the following expression:
+We chose to model the joint probability distribution of the variables using
+Gaussian Graphical Models (GGM) also known as Gaussian Markov Random Fields
+(GMRF). These models are multi-variable Gaussian probability distributions with
+the particularity that the dependencies between the random variables are
+purposefully kept to a minimum. This sparsity allows to create graphical
+representations that are meaningful to the users, and to run inference
+algorithms with reduced computational requirements. In GGM the density function
+of the variable vector $X$ is computed using a mean vector $\mu$ and a
+covariance matrix $\Sigma$ using the following expression:
 
 \begin{equation}
 \label{eq:gaussian}
@@ -286,26 +286,26 @@ P(X|\mu,\Sigma) =
 
 Sparsity in GGMs can be achieved by using regularized linear regressions like
 the lasso \cite{tibshirani1996} to estimate the coefficients of the precision
-matrices $\Omega=\Sigma^{-1}$. The precision matrix has zero coefficients for
-pairs of variables that are conditionally independent. Two algorithms that apply
-this technique for the estimation of the precision matrix are the
-neighborhood estimation \cite{meinshausen2006} and the graphical lasso
-(glasso - \cite{Friedman2008}). We used glasso for the purposes of this
-project.
+matrices $\Omega=\Sigma^{-1}$. The precision matrix has coefficients with a
+value of zero for pairs of variables that are conditionally independent. Two
+algorithms that apply this technique for the estimation of the precision matrix
+are the neighborhood estimation \cite{meinshausen2006} and the graphical lasso
+(glasso - \cite{Friedman2008}). We used glasso for the purposes of this project.
 
 Once we have learned the GGM, we can use inference to perform the forecasting.
 Inference implies finding the conditional distributions of all the unknown or
-unobserved variables ($X^U$) given the known or observed variables ($X^K = o$).
-So for example we may want to determine the values of the variables a time $t + 1$ given the
-observations at time $t$: $P(X^{t+1} | X^{t} = o)$. The conditional distribution
-is also a multi-variate Gaussian distribution which can be obtained using a na\"ive
-matrix inversion approach described in \cite{Koller2009}: let $\mu_1$ be the
-vector of mean values of the unobserved variables, and $\mu_2$ the means of the observed
-variables. Similarly, let $\Sigma_{11}$ be the part of the
-covariance matrix $\Sigma$ with the covariances between unobserved variables,
-$\Sigma_{12}$ and $\Sigma_{21}$ with the covariates between unobserved and
-observed variables, and $\Sigma_{22}$ with the covariates between observed
-variables. $\mu$ and $\Sigma$ are thus partitioned as:
+unobserved variables ($X^{\{1\}}$) given the known or observed variables
+($X^{\{2\}} = o$). So for example we may want to determine the values of the
+variables a time $t + 1$ given the observations at time $t$: $P(X^{t+1} | X^t
+= o)$. The conditional distribution is also a multi-variate Gaussian
+distribution which can be obtained using a na\"ive matrix inversion approach
+described in \cite{Koller2009}: let $\mu_1$ be the vector of mean values of the
+unobserved variables, and $\mu_2$ the means of the observed variables.
+Similarly, let $\Sigma_{11}$ be the part of the covariance matrix $\Sigma$ with
+the covariances between unobserved variables, $\Sigma_{12}$ and $\Sigma_{21}$
+with the covariates between unobserved and observed variables, and $\Sigma_{22}$
+with the covariates between observed variables. $\mu$ and $\Sigma$ are thus
+partitioned as:
 
 \begin{equation}
 \label{eq:distPartition}
@@ -322,30 +322,55 @@ With this partition we can compute the mean ($\hat\mu$) and the covariance
 matrix ($\hat\Sigma$) of the conditional distribution:
 
 \begin{eqnarray}
-P(X^U | X^K = o) \sim \mathcal{N}(\hat\mu, \hat\Sigma) \\
+\label{eq:naiveInference1}
+P(X^{\{1\}} | X^{\{2\}} = o) \sim \mathcal{N}(\hat\mu, \hat\Sigma) \\
+\label{eq:naiveInference2}
 \hat\mu = \mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(o - \mu_2) \\
-\label{eq:naiveInference}
-\hat\Sigma = \Sigma^{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}
+\label{eq:naiveInference3}
+\hat\Sigma = \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}
 \end{eqnarray}
 
-This na\"ive approach requires inverting a matrix which has a complexity of
-$\mathcal{O}(n^3)$. This operation becomes too expensive with large models and
-thus more efficient methods become necessary in these cases. 
+This na\"ive approach requires inverting a matrix, an operation which has a
+complexity of $\mathcal{O}(n^3)$. This operation becomes too expensive with
+large models and thus more efficient methods become necessary in these cases.
+Taking advantage of the graphical structure of the GGM, observed variables can
+be eliminated one at a time in an given order so as to minimize the size of the
+resulting intermediate terms. This operation marginalizes out each observed
+variable until a conditional distribution with only the unobserved variables
+remains. In this way, the size of the covariance matrices that are used to
+define the intermediate distributions is effectively reduced and so are the
+computational requirementes.
 
+This is the principle behind the belief propagation algorithm \cite{Koller2009},
+which consists in a series of variable eliminations resulting in a set of
+messages. These messages are marginalized conditional distributions that are
+passed between the nodes of the graph so that the conditional distributions at
+each sub-graph can be easily computed. In the case of GGM, variable elimination
+consists in performing Gaussian elimination on the probability
+distribution of the cliques. The probability distribution of a clique is
+a multi-variate Gaussian distribution whose parameters are given by the
+elements of the mean vector $\mu$ and the covariance matrix $\Sigma$ that
+correspond to the variables in the clique. Variable elimination is performed by
+using equations \ref{eq:naiveInference1}, \ref{eq:naiveInference2}, and
+\ref{eq:naiveInference3} \cite{malioutov2008approximate}.
 
-Once we have used glasso to learn the HMMs, we estimate the probability
-distribution of the variables to be forecasted using loopy belief
-propagation (\cite{murphy1999}). We chose this technique to account for the
-possibility of the GGMs of containing cycles and thus making other exact
-inference algorithms unaccurate. We will also perform cross-validation on our
-learned model and the data set, so as to test for model accuracy in a way that
-doesn't produce overfitting of the training data.
+However, when the graph contains cycles, it is not possible to perform the
+elimination in such a way that all possible dependency paths are considered
+simultaneously. Loopy belief propagation \cite{murphy1999} consists in extending
+the message passing algorithm to graphical models with cycles.
+Although no exact results are obtained, the approximate solutions provided are
+good enough in a wide spectrum of cases. Variations of the loopy belief
+propagation algorithm exists that look to improve its performance and
+scalability. They focus on walking sums that can be used to speed up convergence
+at the cost of accuracy, and on the construction of low-rank aliasing matrices
+to approximate the inversion of the covariance matrix from the presicion matrix
+\cite{malioutov2008approximate}.
 
-\section{Preliminary results}
+\section{Results}
 
 Thus far we have downloaded the data from the above links, over the range of a
-one month for an area around Pittsurgh of size 60 km x 60 km. We put the data
-into a database for efficient storage and retrieval. We then preprocessed the
+one month for an area around Pittsurgh of size 60 km $\times$ 60 km. We put the
+data into a database for efficient storage and retrieval. We then preprocessed the
 data to be arranged in a series of training examples arranged in the four cases
 mentioned before. We then used glasso to obtain the precision matrix for
 relations between the various variables in the data.
