@@ -6,6 +6,7 @@ args <- commandArgs(trailingOnly = TRUE)
 d <- read.delim(args[1], header = FALSE)
 #colnames(d) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
 colnames(d) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS", "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2", "WS2")
+#colnames(d) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS", "gP", "gPE", "gCP", "gLW", "gSW", "gPE", "gSP", "gSH", "gT", "gWS", "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2", "WS2")
 regularization <- as.numeric(args[2])
 
 predict <- function(i, gm, train, test) {
@@ -57,6 +58,7 @@ test <- function(train, test) {
   rownames(stats) <- c("RMSE / St. Dev", "Sigma Bar / Sigma")
   #colnames(stats) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
   colnames(stats) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS", "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2", "WS2")
+  #colnames(stats) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS", "gP", "gPE", "gCP", "gLW", "gSW", "gPE", "gSP", "gSH", "gT", "gWS", "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2", "WS2")
   
   return(stats)
 }
