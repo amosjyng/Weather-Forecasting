@@ -3,16 +3,15 @@ library(hydroGOF)
 
 # read data from commandline argument
 args <- commandArgs(trailingOnly = TRUE)
-data <- read.delim(args[1], header = TRUE)
+d <- read.delim(args[1], header = FALSE)
+colnames(d) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
+regularization <- as.numeric(args[2])
 
-# load saved GLASSO model
-load("glasso_model.Rda")
-mus <- colMeans(data)
-vars <- gm$w
-
-predict <- function(i) {
+predict <- function(i, gm, train, test) {
+  mus <- colMeans(d)
+  vars <- gm$w
   # condition  on everything but the variable in the i-th column
-  nvars <- ncol(data)
+  nvars <- ncol(train)
   upto <- NULL
   if (i > 1) {
     upto <- 1:(i - 1)
@@ -30,25 +29,60 @@ predict <- function(i) {
   sigma21 <- as.matrix(vars[allExcept_i,i])
   sigma22 <- as.matrix(vars[allExcept_i,allExcept_i])
   
-  muBar <- numeric(nrow(data))
+  # test
+  muBar <- numeric(nrow(test))
   sigmaBar <- sigma11 - sigma12 %*% solve(sigma22) %*% sigma21
-  for (row in 1:nrow(data)) {
-    muBar[[row]] <- mu1 + sigma12 %*% solve(sigma22) %*% (t(as.matrix(data[row,allExcept_i])) - mu2)
+  for (row in 1:nrow(test)) {
+    muBar[[row]] <- mu1 + sigma12 %*% solve(sigma22) %*% (t(as.matrix(test[row,allExcept_i])) - mu2)
   }
-  rmse <- rmse(muBar, data[,i])
+  rmse <- rmse(muBar, test[,i])
   
   return(c(rmse, sigmaBar))
 }
 
-stats <- matrix(-1, nrow = 2, ncol = ncol(data))
-
-for (i in 1:ncol(data)) {
-  print(cat(sprintf("Predicting variable #%i\n", i)))
-  results <- predict(i)
-  stats[1,i] <- results[1] / sd(data[,i])
-  stats[2,i] <- results[2] / vars[i,i]
+test <- function(train, test) {
+  stats <- matrix(-1, nrow = 2, ncol = ncol(train))
+  print("Training...")
+  gm <- glasso(var(train), regularization)
+  
+  print("Testing...")
+  for (i in 1:ncol(train)) {
+    print(cat(sprintf("Predicting variable #%i\n", i)))
+    results <- predict(i, gm, train, test)
+    stats[1,i] <- results[1] / sd(test[,i])
+    stats[2,i] <- results[2] / gm$w[i,i]
+  }
+  
+  rownames(stats) <- c("RMSE / St. Dev", "Sigma Bar / Sigma")
+  colnames(stats) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
+  
+  return(stats)
 }
 
-rownames(stats) <- c("RMSE / St. Dev", "Sigma Bar / Sigma")
-colnames(stats) <- colnames(gm$w)
-print(stats)
+total <- nrow(d)
+chunk <- as.integer(total / 10)
+
+cross_validate <- function(i) {
+  start <- (i - 1) * chunk + 1
+  end <- i * chunk
+  
+  test <- d[start:end,]
+  train <- d[c(1:(start - 1), c((end + 1):nrow(d))),]
+  
+  stats <- test(train, test)
+  print(cat(sprintf("For cross-validation iteration %i:", i)))
+  print(stats)
+  
+  return (stats)
+}
+
+stat_matrices <- list()
+for (i in 1:10) {
+  stat_matrices[[i]] <- cross_validate(i)
+}
+
+add <- function(x) Reduce("+", x)
+
+avg_stats <- add(stat_matrices) / 10
+print(avg_stats)
+save(avg_stats, file="stats.Rda")
