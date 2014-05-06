@@ -281,7 +281,8 @@ covariance matrix $\Sigma$ using the following expression:
 \begin{equation}
 \label{eq:gaussian}
 P(X|\mu,\Sigma) =
-\frac{1}{(2\pi)^{n/2}\vert\Sigma\vert^{1/2}}\exp[-\frac{1}{2}(X - \mu)^T\Sigma^{-1}(X - \mu)]
+\frac{1}{(2\pi)^{n/2}\vert\Sigma\vert^{1/2}} \exp \left [ -\frac{1}{2}(X -
+\mu)^T\Sigma^{-1}(X - \mu) \right ]
 \end{equation}
 
 Sparsity in GGMs can be achieved by using regularized linear regressions like
@@ -466,7 +467,6 @@ The new list of activities we intend to perform are
 \bibliographystyle{icml2012}
 
 \end{document}
-
 
 % This document was modified from the file originally made available by
 % Pat Langley and Andrea Danyluk for ICML-2K. This version was
