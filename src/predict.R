@@ -4,7 +4,8 @@ library(hydroGOF)
 # read data from commandline argument
 args <- commandArgs(trailingOnly = TRUE)
 d <- read.delim(args[1], header = FALSE)
-colnames(d) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
+#colnames(d) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
+colnames(d) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS", "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2", "WS2")
 regularization <- as.numeric(args[2])
 
 predict <- function(i, gm, train, test) {
@@ -54,7 +55,8 @@ test <- function(train, test) {
   }
   
   rownames(stats) <- c("RMSE / St. Dev", "Sigma Bar / Sigma")
-  colnames(stats) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
+  #colnames(stats) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS")
+  colnames(stats) <- c("P", "PE", "CP", "LW", "SW", "PE", "SP", "SH", "T", "WS", "P2", "PE2", "CP2", "LW2", "SW2", "PE2", "SP2", "SH2", "T2", "WS2")
   
   return(stats)
 }
@@ -65,9 +67,16 @@ chunk <- as.integer(total / 10)
 cross_validate <- function(i) {
   start <- (i - 1) * chunk + 1
   end <- i * chunk
-  
+  upto <- NULL
+  if (start > 1) {
+    upto <- 1:(start - 1)
+  }
+  from <- NULL
+  if (end < nrow(d)) {
+    from <- (end + 1):nrow(d)
+  }
   test <- d[start:end,]
-  train <- d[c(1:(start - 1), c((end + 1):nrow(d))),]
+  train <- d[c(upto,from),]
   
   stats <- test(train, test)
   print(cat(sprintf("For cross-validation iteration %i:", i)))

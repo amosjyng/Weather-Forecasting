@@ -1,3 +1,4 @@
+Rscript src/glasso.R $1 $2
 mkdir temp
 sed 1d $1 > temp/no_header.txt
 shuf temp/no_header.txt > temp/shuffled_data.txt
