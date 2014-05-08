@@ -38,7 +38,6 @@
 % note in the first column to ``Appearing in''
 \usepackage[accepted]{icml2012}
 
-
 % The \icmltitle you define below is probably too long as a header.
 % Therefore, a short form for the running title is supplied here:
 \icmltitlerunning{Weather Forecasting using Probabilistic Graphical Models}
@@ -60,17 +59,28 @@
 % You may provide any keywords that you 
 % find helpful for describing your paper; these are used to populate 
 % the "keywords" metadata in the PDF but will not be shown in the document
-\icmlkeywords{boring formatting information, machine learning, ICML}
+\icmlkeywords{Weather forecasting, Gaussian graphical models, land
+observations}
 
 \vskip 0.3in
 ]
 
 \begin{abstract} 
-Weather prediction has usually involved running physical models of weather
-phenomena in order to predict future conditions. In this project, instead of
-focusing on the physics, we propose using probabilistic models based on
-meteorological observations gathered by NASA to produce future weather
-conditions.
+
+Weather prediction has usually involved running deterministic physical models of
+meteorological phenomena in order to predict future conditions or, less
+commonly, using non-stochastic machine learning approaches that focus mostly on
+precipitation alone on a single location. In this project, we propose to use a
+probabilistic machine learning method instead, that takes into account the
+spatial distribution of gridded meteorological data products; the interaction
+between additional variables like pressure, temperature, radiation, wind speed,
+and precipitation; and the inherent uncertainty associated with forecasting. A
+Gaussian Graphical Model is used on NASA's NLDAS-2 dataset which offers gridded
+multi-variable information on an hourly basis. Although the initial
+configurations attempted did not yield very accurate predictions for some
+variables, the method adequately captures the forecasting uncertainty and leaves
+room for improvement through the use of more expressive input features.
+
 \end{abstract} 
 
 \section{Introduction}
@@ -82,20 +92,20 @@ preparation and response. The availability and the accuracy of forecasts thus
 have a profound impact on human activities at many levels, both in measurable and
 unmeasurable aspects.
 
-However, predicting weather is a difficult research problem. Most often,
+However, predicting the weather is a difficult research problem. Most often,
 physically-based models with global and regional scales are used to forecast
 future conditions. In this project, we will instead take a probabilistic machine
-learning approach focused on a regional scale and predict atmospheric variables
+learning approach, focused on a regional scale, to predict atmospheric variables
 at specific geographic locations. As opposed to deterministic methods, this
-probabilistic approach will help us not only estimate the most probable values
-for the forecasting variables as a regression approach would, but also determine
-what is the level of uncertainty associated with each forecasted variable.
-Uncertainty becomes more important as the forecasting time period becomes
-larger. This additional knowledge would be key for potential users in order to
+probabilistic approach will help us not only to estimate the most probable
+values for the forecasting variables as a regression approach would, but also to
+determine what the level of uncertainty associated with each forecasted
+value is. Uncertainty becomes more important as the forecasting time period
+becomes larger. This additional knowledge would be key for potential users in order to
 assess how much they can trust the delivered forecasts.
 
-The forecasts will be based on prior atmospheric states in the neighborhood of
-the selected location. In particular, we will attempt to predict the probability
+The forecasts are based on prior atmospheric states in the neighborhood of the
+selected location. In particular, we attempt to predict the probability
 distributions of variables such as pressure, precipitation, and temperature
 based on data recorded by NASA using assimilated land products.
 
@@ -181,15 +191,19 @@ each spatial cell.
 
 \begin{figure}[ht] \vskip 0.2in
 \begin{center}
-\centerline{\includegraphics[width=0.9\columnwidth]{images/weather.png}}
-\caption{This is one example of a rainfall image produced during a severe storm in Pennsylvania in 2010. Each cell in this image has a size of roughly 10 km $\times$ 10 km. More information on the NLDAS-2 data products can be found on the following URLs: \url{http://ldas.gsfc.nasa.gov/index.php} and \url{http://disc.sci.gsfc.nasa.gov/hydrology/data-holdings}.}
+\centerline{\includegraphics[width=1.0\columnwidth]{images/weather.png}}
+\caption{This is one example of a rainfall image produced during a severe storm
+in Pennsylvania in 2010. Each cell in this image has a size of roughly 10 km
+$\times$ 10 km. More information on the NLDAS-2 data products can be found on
+the following URLs: \url{http://ldas.gsfc.nasa.gov/index.php} and
+\url{http://disc.sci.gsfc.nasa.gov/hydrology/data-holdings}.}
 \label{fig:example_rainfall}
 \end{center}
 \vskip -0.2in
 \end{figure}
 
 \begin{table*}[t]
-\caption{Meteorological variables available on NLDAS-2}
+\caption{Meteorological variables available on NLDAS-2.}
 \label{tab:variables}
 \begin{tabular}{p{4cm} p{8cm} p{3.5cm}}
 \hline
@@ -257,7 +271,7 @@ both temporal and spatial derivatives.
 
 \begin{center}
 \begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/plate_models.png}
+\includegraphics[width=1.0\columnwidth]{images/plate_models.png}
 \caption{Graphical models to represent different
 selections of input variables for the predictive model. \textit{S} represents
 a set of neighboring cells and \textit{p} represents the number of previous
@@ -298,12 +312,12 @@ Inference implies finding the conditional distributions of all the unknown or
 unobserved variables ($X^{\{1\}}$) given the known or observed variables
 ($X^{\{2\}} = o$). So for example we may want to determine the values of the
 variables a time $t + 1$ given the observations at time $t$: $P(X^{t+1} | X^t
-= o)$. The conditional distribution is also a multi-variate Gaussian
+= o)$. The conditional distribution is also a multi-variable Gaussian
 distribution which can be obtained using a na\"ive matrix inversion approach
 described in \cite{Koller2009}: let $\mu_1$ be the vector of mean values of the
 unobserved variables, and $\mu_2$ the means of the observed variables.
 Similarly, let $\Sigma_{11}$ be the part of the covariance matrix $\Sigma$ with
-the covariances between unobserved variables, $\Sigma_{12}$ and $\Sigma_{21}$
+the covariates between unobserved variables, $\Sigma_{12}$ and $\Sigma_{21}$
 with the covariates between unobserved and observed variables, and $\Sigma_{22}$
 with the covariates between observed variables. $\mu$ and $\Sigma$ are thus
 partitioned as:
@@ -340,7 +354,7 @@ resulting intermediate terms. This operation marginalizes out each observed
 variable until a conditional distribution with only the unobserved variables
 remains. In this way, the size of the covariance matrices that are used to
 define the intermediate distributions is effectively reduced and so are the
-computational requirementes.
+computational requirements.
 
 This is the principle behind the belief propagation algorithm \cite{Koller2009},
 which consists in a series of variable eliminations resulting in a set of
@@ -349,7 +363,7 @@ passed between the nodes of the graph so that the conditional distributions at
 each sub-graph can be easily computed. In the case of GGM, variable elimination
 consists in performing Gaussian elimination on the probability
 distribution of the cliques. The probability distribution of a clique is
-a multi-variate Gaussian distribution whose parameters are given by the
+a multi-variable Gaussian distribution whose parameters are given by the
 elements of the mean vector $\mu$ and the covariance matrix $\Sigma$ that
 correspond to the variables in the clique. Variable elimination is performed by
 using equations \ref{eq:naiveInference1}, \ref{eq:naiveInference2}, and
@@ -357,111 +371,148 @@ using equations \ref{eq:naiveInference1}, \ref{eq:naiveInference2}, and
 
 However, when the graph contains cycles, it is not possible to perform the
 elimination in such a way that all possible dependency paths are considered
-simultaneously. Loopy belief propagation \cite{murphy1999} consists in extending
-the message passing algorithm to graphical models with cycles.
+simultaneously. Loopy belief propagation \cite{murphy1999} consists in
+extending the message passing algorithm to graphical models with cycles.
 Although no exact results are obtained, the approximate solutions provided are
 good enough in a wide spectrum of cases. Variations of the loopy belief
 propagation algorithm exists that look to improve its performance and
 scalability. They focus on walking sums that can be used to speed up convergence
 at the cost of accuracy, and on the construction of low-rank aliasing matrices
-to approximate the inversion of the covariance matrix from the presicion matrix
+to approximate the inversion of the covariance matrix from the precision matrix
 \cite{malioutov2008approximate}.
 
 \section{Results}
 
-Thus far we have downloaded the data from the above links, over the range of a
-one month for an area around Pittsurgh of size 60 km $\times$ 60 km. We put the
-data into a database for efficient storage and retrieval. We then preprocessed the
-data to be arranged in a series of training examples arranged in the four cases
-mentioned before. We then used glasso to obtain the precision matrix for
-relations between the various variables in the data.
+We applied our method over an area of roughly 60 km $\times$ 60 km around
+Pittsburgh, PA (-80.31° < E < -79.69°, 40.19° < N < 40.81°). This area
+has a size of 6 $\times$ 6 pixels in the NLDAS-2 grid. We downloaded one
+month of data for this area during a period where heavy rainfall occurred,
+between 9/15/2010 and 10/14/2010.
 
-The results for different glasso regularization parameters are plotted in
-Figures~\ref{fig:data_0} to \ref{fig:data_100}. We also ran glasso to infer the
-network structure for variables in both $t$ and $t - 1$ timestamps; results are
-shown in Figures~\ref{fig:dynamic_0} to \ref{fig:dynamic_100}. Finally, we ran
-glasso to infer the relationships between the various states of weather and the
-changes from one state to the other. Results for this are shown in Figures~
-\ref{fig:grad_0} to \ref{fig:grad_100}.
+Four test configurations were used: ``static'', which simply correlates
+variables in a single cell in the current time step; ``dynamic'', which
+estimates the value of each variable given the values in the previous time step;
+``spatial gradient'', which uses the same features as the dynamic configuration
+but adds the magnitude of the spatial gradient of the values in the previous
+time step; and ``temporal gradient'', which adds a temporal gradient, as
+measured with the two previous time steps, to the dynamic features.
+The addition of the spatial gradient is a compact way to include the values of
+adjacent cells into the calculation. Larger neighborhoods of cells can similarly
+be taken into account if higher order spatial derivatives are used.
+In the same way, higher order temporal derivatives can be used for including
+values further back in time.
 
+Table \ref{tab:results_unreg} shows the testing error of the estimated values
+for each of the variables and each of the four configurations. The error is the
+root mean square error of the estimated posterior means against the testing set
+of values as a percentage of the standard deviation of the prior distribution of each
+variable. The error was computed using 10-fold cross-validation. We present the
+results in this way to standardize the error over variables with different ranges. 
+
+We can see that there is a wide difference in the ability to predict each of the
+variables, being the estimation of the potential evaporation the most accurate,
+and that of the surface pressure the least accurate. The dynamic approach shows
+a big improvement over the static approach, but surprisingly, the addition of
+the gradient terms does not improve the accuracy of the prediction
+significantly. There is a slight precision improvement for temporal gradients
+over spatial gradients.
+
+\begin{table*}[t]
+\caption{Root mean square testing error (RMSE) as a fraction of the standard
+deviation of the prior of each variable for the four training sets with no
+regularization.}
+\label{tab:results_unreg}
+\centering
+\begin{tabular}{p{4cm} p{1.5cm} p{1.5cm} p{1.5cm} p{1.5cm}}
+\hline
+\textbf{Variable} &\textbf{Static} &\textbf{Dynamic} &\textbf{Spatial
+gradient} &\textbf{Temporal gradient} \\
+\hline
+precipitation 				&0.92 &0.84 &0.86 &0.84 \\
+available potential energy	&0.81 &0.21 &0.21 &0.15 \\
+\% convective energy		&0.89 &0.72 &0.73 &0.71 \\
+LW radiation				&0.61 &0.26 &0.26 &0.25 \\
+SW radiation 				&0.42 &0.19 &0.19 &0.16 \\
+potential evaporation		&0.32 &0.25 &0.25 &0.22 \\
+surface pressure			&0.94 &0.08 &0.08 &0.06 \\
+specific humidity			&0.47 &0.16	&0.16 &0.16 \\
+temperature					&0.47 &0.09 &0.08 &0.07 \\
+wind speed					&0.79 &0.20 &0.20 &0.19 \\
+\hline
+\end{tabular}
+\end{table*}
+
+Table \ref{tab:results_reg} shows the results for the regularized version of the
+method. These results are included to determine if the model is overfitting the
+data. The regularization constant was chosen with a trial and error approach,
+and the best coefficient was chosen for each configuration. The table shows that
+the test error increases considerably thanks to regularization, implying that
+there is no overfitting occurring, and that the free inclusion of dependencies
+between variables is justified.
+
+\begin{table*}[t]
+\caption{Root mean square testing error (RMSE) as a fraction of the standard
+deviation of the prior of each variable for the four training sets with regularization.}
+\label{tab:results_reg}
+\centering
+\begin{tabular}{p{4cm} p{1.5cm} p{1.5cm} p{1.5cm} p{1.5cm}}
+\hline
+\textbf{Variable} &\textbf{Static} &\textbf{Dynamic} &\textbf{Spatial
+gradient} &\textbf{Temporal gradient} \\
+\hline
+precipitation 				&0.99 &0.99 &0.98 &0.98 \\
+available potential energy	&0.89 &0.22 &0.22 &0.16 \\
+\% convective energy		&1.00 &1.00 &1.00 &1.00 \\
+LW radiation				&0.88 &0.30 &0.30 &0.30 \\
+SW radiation 				&0.91 &0.32 &0.32 &0.18 \\
+potential evaporation		&1.00 &1.00 &1.00 &1.00 \\
+surface pressure			&0.98 &0.09 &0.09 &0.07 \\
+specific humidity			&1.00 &1.00	&1.00 &1.00 \\
+temperature					&0.70 &0.63 &0.63 &0.62 \\
+wind speed					&0.90 &0.88 &0.88 &0.88 \\
+\hline
+\end{tabular}
+\end{table*}
+
+Figure \ref{fig:uncertainty} shows a scatterplot between the test error and the
+estimated posterior standard deviation of the prediction. The plot and the
+coefficient of determination $R^2$ of 0.9672 show that the model makes a very
+good estimation of the uncertainty of the forecast. The instances of all four
+configurations were included in the figure, but taking the unregularized cases
+alone would result in an even tighter fit.
+
+\begin{center}
 \begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/data_0.png}
-\caption{Network structure as inferred from the precision matrix obtained from results thus far, using a GLASSO regularization parameter of 0 (equivalent to no regularization). Edges are shown where precision matrix entries were nonzero.}
-\label{fig:data_0}
+\includegraphics[width=1.0\columnwidth]{images/uncertainty.png}
+\caption{Scatterplot of the percentage root mean square test error of the
+prediction and the ratio between posterior and prior standard deviations. The
+close similarity shows that the model adequately estimates the expected error or
+uncertainty associated with the prediction through the posterior
+variances.}\label{fig:uncertainty}
 \end{figure}
+\end{center}
 
-\begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/data_50.png}
-\caption{Network structure with a GLASSO regularization parameter of 50.}
-\label{fig:data_50}
-\end{figure}
+\section{Conclusions and future work}
 
-\begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/data_100.png}
-\caption{Network structure with a GLASSO regularization parameter of 100.}
-\label{fig:data_100}
-\end{figure}
+We developed a Gaussian graphical model for the probabilistic forecasting of
+meteorological variables. The model was applied on NASA's NLDAS-2 dataset which
+offers gridded values for a set of eleven variables every hour. Results show
+that some variables are more easily estimated than others, and that the use of a
+multi-variable approach can be helpful in the process. Additionally, the
+probabilistic nature of the model showed that it can adequately capture the
+uncertainty associated with the forecasts. However, the actual accuracy of the
+predictions was found to be relatively low for most of the variables.
 
-\begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/dynamic_0.png}
-\caption{Network structure of dynamic data with a GLASSO regularization parameter of 0 (no regularization).}
-\label{fig:dynamic_0}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/dynamic_50.png}
-\caption{Network structure of dynamic data with a GLASSO regularization parameter of 50.}
-\label{fig:dynamic_50}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/dynamic_100.png}
-\caption{Network structure of dynamic data with a GLASSO regularization parameter of 100.}
-\label{fig:dynamic_100}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/grad_0.png}
-\caption{Network structure of gradient data with a GLASSO regularization parameter of 0 (no regularization).}
-\label{fig:grad_0}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/grad_50.png}
-\caption{Network structure of gradient data with a GLASSO regularization parameter of 50.}
-\label{fig:grad_50}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=0.9\columnwidth]{images/grad_100.png}
-\caption{Network structure of gradient data with a GLASSO regularization parameter of 100.}
-\label{fig:grad_100}
-\end{figure}
-
-\section{Activity plan}
-
-We plan to use different probabilistic graphical models (HMMs, CRFs, plain old
-Bayesian networks) to try to learn the conditional probability distribution
-parameters of weather variables maps given the observed values from previous
-time steps. We are currently assuming the distributions to take on a Gaussian
-form, and learning the distributions from scratch.
-
-\subsection{Old Activities}
-The old list of activities that we had intended to perform include
-\begin{enumerate}
-\item Selection of the dataset and the study area
-\item Data download and pre-processing
-\item Variable discretization strategy
-\item Na\"\i ve Bayes formulation
-\item Review of probabilistic graphical models for continuous variables
-\end{enumerate}
-
-\subsection{New Activities}
-The new list of activities we intend to perform are
-\begin{enumerate}
-\item Formulation of data in other commonly-used graphical models (CRFs, HMMs, etc.).
-\item Cross-validation to check for model accuracy while preventing overfitting
-\end{enumerate}
+Future work should focus on exploring more aggressive feature configurations,
+given that no overfitting occurred with the features selected in this study. The
+possibilities include taking into account higher order spatial and temporal
+derivatives of the fields to capture the effect of larger neighboring areas and
+longer temporal frames; or directly including the neighbor cell's values within
+the training examples. As a complementary approach, higher order polynomial
+terms of the features can be used to capture non-linear behavior and
+interactions between variables. Finally, the inclusion of variables from
+additional atmospheric or land-surface data sets can help in achieving a better
+correlated model.
 
 \bibliography{bibliography}
 \bibliographystyle{icml2012}
