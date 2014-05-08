@@ -72,7 +72,7 @@ meteorological phenomena in order to predict future conditions or, less
 commonly, using non-stochastic machine learning approaches that focus mostly on
 precipitation alone on a single location. In this project, we propose to use a
 probabilistic machine learning method instead, that takes into account the
-spatial distribution of gridded meteorological data products; the interaction
+spatial distribution of gridded meteorological data products; the interactions
 between additional variables like pressure, temperature, radiation, wind speed,
 and precipitation; and the inherent uncertainty associated with forecasting. A
 Gaussian Graphical Model is used on NASA's NLDAS-2 dataset which offers gridded
@@ -144,9 +144,9 @@ the results from discrete wavelet transforms over the training data are fed into
 a neuro-fuzzy model for prediction. Wavelet neuro-fuzzy approaches are also
 studied by \citet{Kisi2011} and contrasted with single neuro-fuzzy models,
 single genetic programming regressions, and their conjoint counterparts using
-wavelet transformations. Algorithms of different nature than ANNs that are used
+wavelet transformations. Algorithms of a different nature than ANNs that are used
 in weather forecasting include linear regression, discriminant analysis, and
-logistic regression as reviewed in the work by \citet{applequist2002}.
+logistic regression, as reviewed in the work by \citet{applequist2002}.
 
 Recently, meteorological observations from land-based and satellite-based
 Doppler radars have become widely available, providing enhanced coverage at
@@ -177,14 +177,14 @@ raw data from gauges, land radars, and satellites.
 The North American Land Data Assimilation System (NLDAS), a service hosted by
 the Goddard Earth Sciences Data and Information Services Center at NASA, is a
 multi-variable source of information produced through the assimilation of land
-measurements. We will focus mainly on this dataset due to both its relative high
+measurements. We will focus mainly on this dataset due to both its relatively high
 precision and the multiple variables it reports: precipitation, atmospheric
 pressure, humidity, temperature, wind speed, convective potential energy, and
 radiation flux.
 
 The NLDAS product provides hourly weather data for the US beginning in 1980.
-Each sampled time in the data set includes the following values per cell in a
-grid of resolution 1/8 of a degree in both latitude and longitude directions.
+Each sampled time in the data set includes the aforementioned values per cell in a
+grid of resolution 1/8 of a degree in both latitude and longitude directions (i.e. each cell is essentially a 10 km by 10 km square).
 Figure~\ref{fig:example_rainfall} provides an illustration of one such hour-long
 sample. Table~\ref{tab:variables} lists the full set of variables available at
 each spatial cell.
@@ -283,7 +283,7 @@ dependency.}\label{fig:plate_models}
 \end{center}
 
 We chose to model the joint probability distribution of the variables using
-Gaussian Graphical Models (GGM) also known as Gaussian Markov Random Fields
+Gaussian Graphical Models (GGM), also known as Gaussian Markov Random Fields
 (GMRF). These models are multi-variable Gaussian probability distributions with
 the particularity that the dependencies between the random variables are
 purposefully kept to a minimum. This sparsity allows to create graphical
@@ -410,7 +410,7 @@ variable. The error was computed using 10-fold cross-validation. We present the
 results in this way to standardize the error over variables with different ranges. 
 
 We can see that there is a wide difference in the ability to predict each of the
-variables, being the estimation of the potential evaporation the most accurate,
+variables. The estimation of the potential evaporation turns out to be the most accurate overall,
 and that of the surface pressure the least accurate. The dynamic approach shows
 a big improvement over the static approach, but surprisingly, the addition of
 the gradient terms does not improve the accuracy of the prediction
